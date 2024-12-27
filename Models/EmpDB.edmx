@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EmployeeAttendanceDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Approval">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpId" Type="int" Nullable="false" />
+          <Property Name="ApprovalDate" Type="date" Nullable="false" />
+          <Property Name="WorkingMinutes" Type="int" Nullable="false" />
+          <Property Name="ApprovedById" Type="int" />
+          <Property Name="ApprovedTime" Type="datetime" />
+          <Property Name="CreatedById" Type="int" Nullable="false" />
+          <Property Name="CreatedTime" Type="datetime" Nullable="false" />
+          <Property Name="IsApproved" Type="bit" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="ApprovedMinutes" Type="int" />
+          <Property Name="ConvFactor" Type="numeric" Precision="6" Scale="2" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpId" Type="int" Nullable="false" />
+          <Property Name="AttendanceDate" Type="datetime" Nullable="false" />
+          <Property Name="PresentStatusId" Type="int" />
+          <Property Name="WorkingMin" Type="int" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedById" Type="int" />
+          <Property Name="CalculatedMinutes" Type="int" />
+          <Property Name="SetteledMinutes" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="HolidayMinutes" Type="int" />
+          <Property Name="SuddenLeaveMinutes" Type="int" />
+          <Property Name="LeaveMinutes" Type="int" />
+          <Property Name="OvertimeMinutes" Type="int" />
+        </EntityType>
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Salary" Type="numeric" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="DailyWorkingMin" Type="int" Nullable="false" />
+          <Property Name="UserType" Type="nvarchar" MaxLength="50" />
+          <Property Name="GapingMinutes" Type="int" />
+          <Property Name="Days" Type="nvarchar" MaxLength="50" />
+          <Property Name="SchemeId" Type="int" />
+        </EntityType>
+        <EntityType Name="InOutDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpId" Type="int" Nullable="false" />
+          <Property Name="PunchDateTime" Type="datetime" Nullable="false" />
+          <Property Name="InOutTypeId" Type="int" Nullable="false" />
+          <Property Name="InId" Type="int" />
+          <Property Name="IsLocked" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedById" Type="int" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="tblMst_Holiday">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Year" Type="int" Nullable="false" />
+          <Property Name="Month" Type="int" Nullable="false" />
+          <Property Name="Day" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblMst_InOutType">
+          <Key>
+            <PropertyRef Name="InOutTypeId" />
+          </Key>
+          <Property Name="InOutTypeId" Type="int" Nullable="false" />
+          <Property Name="InOut" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblMst_PresentStatus">
+          <Key>
+            <PropertyRef Name="PresentStatusId" />
+          </Key>
+          <Property Name="PresentStatusId" Type="int" Nullable="false" />
+          <Property Name="PresentStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblMst_Scheme">
+          <Key>
+            <PropertyRef Name="SchemeId" />
+          </Key>
+          <Property Name="SchemeId" Type="int" Nullable="false" />
+          <Property Name="Scheme" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_Approval_Employee">
+          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+          <End Role="Approval" Type="Self.Approval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Approval">
+              <PropertyRef Name="EmpId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Employee">
+          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="EmpId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_PresentStatus">
+          <End Role="tblMst_PresentStatus" Type="Self.tblMst_PresentStatus" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblMst_PresentStatus">
+              <PropertyRef Name="PresentStatusId" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="PresentStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InOutDetails_InOutType">
+          <End Role="tblMst_InOutType" Type="Self.tblMst_InOutType" Multiplicity="1" />
+          <End Role="InOutDetails" Type="Self.InOutDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblMst_InOutType">
+              <PropertyRef Name="InOutTypeId" />
+            </Principal>
+            <Dependent Role="InOutDetails">
+              <PropertyRef Name="InOutTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EmployeeAttendanceDBModelStoreContainer">
+          <EntitySet Name="Approval" EntityType="Self.Approval" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InOutDetails" EntityType="Self.InOutDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblMst_Holiday" EntityType="Self.tblMst_Holiday" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblMst_InOutType" EntityType="Self.tblMst_InOutType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblMst_PresentStatus" EntityType="Self.tblMst_PresentStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblMst_Scheme" EntityType="Self.tblMst_Scheme" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Approval_Employee" Association="Self.FK_Approval_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Approval" EntitySet="Approval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Employee" Association="Self.FK_Attendance_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_PresentStatus" Association="Self.FK_Attendance_PresentStatus">
+            <End Role="tblMst_PresentStatus" EntitySet="tblMst_PresentStatus" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InOutDetails_InOutType" Association="Self.FK_InOutDetails_InOutType">
+            <End Role="tblMst_InOutType" EntitySet="tblMst_InOutType" />
+            <End Role="InOutDetails" EntitySet="InOutDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EmployeeAttendanceDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="EmployeeAttendanceDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Approval" EntityType="EmployeeAttendanceDBModel.Approval" />
+          <EntitySet Name="Attendance" EntityType="EmployeeAttendanceDBModel.Attendance" />
+          <EntitySet Name="Employee" EntityType="EmployeeAttendanceDBModel.Employee" />
+          <EntitySet Name="InOutDetails" EntityType="EmployeeAttendanceDBModel.InOutDetails" />
+          <EntitySet Name="tblMst_Holiday" EntityType="EmployeeAttendanceDBModel.tblMst_Holiday" />
+          <EntitySet Name="tblMst_InOutType" EntityType="EmployeeAttendanceDBModel.tblMst_InOutType" />
+          <EntitySet Name="tblMst_PresentStatus" EntityType="EmployeeAttendanceDBModel.tblMst_PresentStatus" />
+          <EntitySet Name="tblMst_Scheme" EntityType="EmployeeAttendanceDBModel.tblMst_Scheme" />
+          <AssociationSet Name="FK_Approval_Employee" Association="EmployeeAttendanceDBModel.FK_Approval_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Approval" EntitySet="Approval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Employee" Association="EmployeeAttendanceDBModel.FK_Attendance_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_PresentStatus" Association="EmployeeAttendanceDBModel.FK_Attendance_PresentStatus">
+            <End Role="tblMst_PresentStatus" EntitySet="tblMst_PresentStatus" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InOutDetails_InOutType" Association="EmployeeAttendanceDBModel.FK_InOutDetails_InOutType">
+            <End Role="tblMst_InOutType" EntitySet="tblMst_InOutType" />
+            <End Role="InOutDetails" EntitySet="InOutDetails" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Approval">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpId" Type="Int32" Nullable="false" />
+          <Property Name="ApprovalDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="WorkingMinutes" Type="Int32" Nullable="false" />
+          <Property Name="ApprovedById" Type="Int32" />
+          <Property Name="ApprovedTime" Type="DateTime" Precision="3" />
+          <Property Name="CreatedById" Type="Int32" Nullable="false" />
+          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsApproved" Type="Boolean" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ApprovedMinutes" Type="Int32" />
+          <Property Name="ConvFactor" Type="Decimal" Precision="6" Scale="2" />
+          <NavigationProperty Name="Employee" Relationship="EmployeeAttendanceDBModel.FK_Approval_Employee" FromRole="Approval" ToRole="Employee" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpId" Type="Int32" Nullable="false" />
+          <Property Name="AttendanceDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PresentStatusId" Type="Int32" />
+          <Property Name="WorkingMin" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedById" Type="Int32" />
+          <Property Name="CalculatedMinutes" Type="Int32" />
+          <Property Name="SetteledMinutes" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="HolidayMinutes" Type="Int32" />
+          <Property Name="SuddenLeaveMinutes" Type="Int32" />
+          <Property Name="LeaveMinutes" Type="Int32" />
+          <Property Name="OvertimeMinutes" Type="Int32" />
+          <NavigationProperty Name="Employee" Relationship="EmployeeAttendanceDBModel.FK_Attendance_Employee" FromRole="Attendance" ToRole="Employee" />
+          <NavigationProperty Name="tblMst_PresentStatus" Relationship="EmployeeAttendanceDBModel.FK_Attendance_PresentStatus" FromRole="Attendance" ToRole="tblMst_PresentStatus" />
+        </EntityType>
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Salary" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DailyWorkingMin" Type="Int32" Nullable="false" />
+          <Property Name="UserType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GapingMinutes" Type="Int32" />
+          <Property Name="Days" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SchemeId" Type="Int32" />
+          <NavigationProperty Name="Approval" Relationship="EmployeeAttendanceDBModel.FK_Approval_Employee" FromRole="Employee" ToRole="Approval" />
+          <NavigationProperty Name="Attendance" Relationship="EmployeeAttendanceDBModel.FK_Attendance_Employee" FromRole="Employee" ToRole="Attendance" />
+        </EntityType>
+        <EntityType Name="InOutDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpId" Type="Int32" Nullable="false" />
+          <Property Name="PunchDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InOutTypeId" Type="Int32" Nullable="false" />
+          <Property Name="InId" Type="Int32" />
+          <Property Name="IsLocked" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedById" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tblMst_InOutType" Relationship="EmployeeAttendanceDBModel.FK_InOutDetails_InOutType" FromRole="InOutDetails" ToRole="tblMst_InOutType" />
+        </EntityType>
+        <EntityType Name="tblMst_Holiday">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="Month" Type="Int32" Nullable="false" />
+          <Property Name="Day" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="tblMst_InOutType">
+          <Key>
+            <PropertyRef Name="InOutTypeId" />
+          </Key>
+          <Property Name="InOutTypeId" Type="Int32" Nullable="false" />
+          <Property Name="InOut" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InOutDetails" Relationship="EmployeeAttendanceDBModel.FK_InOutDetails_InOutType" FromRole="tblMst_InOutType" ToRole="InOutDetails" />
+        </EntityType>
+        <EntityType Name="tblMst_PresentStatus">
+          <Key>
+            <PropertyRef Name="PresentStatusId" />
+          </Key>
+          <Property Name="PresentStatusId" Type="Int32" Nullable="false" />
+          <Property Name="PresentStatus" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Attendance" Relationship="EmployeeAttendanceDBModel.FK_Attendance_PresentStatus" FromRole="tblMst_PresentStatus" ToRole="Attendance" />
+        </EntityType>
+        <EntityType Name="tblMst_Scheme">
+          <Key>
+            <PropertyRef Name="SchemeId" />
+          </Key>
+          <Property Name="SchemeId" Type="Int32" Nullable="false" />
+          <Property Name="Scheme" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Approval_Employee">
+          <End Type="EmployeeAttendanceDBModel.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="EmployeeAttendanceDBModel.Approval" Role="Approval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Approval">
+              <PropertyRef Name="EmpId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Employee">
+          <End Type="EmployeeAttendanceDBModel.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="EmployeeAttendanceDBModel.Attendance" Role="Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="EmpId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_PresentStatus">
+          <End Type="EmployeeAttendanceDBModel.tblMst_PresentStatus" Role="tblMst_PresentStatus" Multiplicity="0..1" />
+          <End Type="EmployeeAttendanceDBModel.Attendance" Role="Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblMst_PresentStatus">
+              <PropertyRef Name="PresentStatusId" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="PresentStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InOutDetails_InOutType">
+          <End Type="EmployeeAttendanceDBModel.tblMst_InOutType" Role="tblMst_InOutType" Multiplicity="1" />
+          <End Type="EmployeeAttendanceDBModel.InOutDetails" Role="InOutDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblMst_InOutType">
+              <PropertyRef Name="InOutTypeId" />
+            </Principal>
+            <Dependent Role="InOutDetails">
+              <PropertyRef Name="InOutTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EmployeeAttendanceDBModelStoreContainer" CdmEntityContainer="EmployeeAttendanceDBEntities">
+          <EntitySetMapping Name="Approval">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.Approval">
+              <MappingFragment StoreEntitySet="Approval">
+                <ScalarProperty Name="ConvFactor" ColumnName="ConvFactor" />
+                <ScalarProperty Name="ApprovedMinutes" ColumnName="ApprovedMinutes" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="ApprovedTime" ColumnName="ApprovedTime" />
+                <ScalarProperty Name="ApprovedById" ColumnName="ApprovedById" />
+                <ScalarProperty Name="WorkingMinutes" ColumnName="WorkingMinutes" />
+                <ScalarProperty Name="ApprovalDate" ColumnName="ApprovalDate" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attendance">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.Attendance">
+              <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="OvertimeMinutes" ColumnName="OvertimeMinutes" />
+                <ScalarProperty Name="LeaveMinutes" ColumnName="LeaveMinutes" />
+                <ScalarProperty Name="SuddenLeaveMinutes" ColumnName="SuddenLeaveMinutes" />
+                <ScalarProperty Name="HolidayMinutes" ColumnName="HolidayMinutes" />
+                <ScalarProperty Name="SetteledMinutes" ColumnName="SetteledMinutes" />
+                <ScalarProperty Name="CalculatedMinutes" ColumnName="CalculatedMinutes" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="WorkingMin" ColumnName="WorkingMin" />
+                <ScalarProperty Name="PresentStatusId" ColumnName="PresentStatusId" />
+                <ScalarProperty Name="AttendanceDate" ColumnName="AttendanceDate" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employee">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.Employee">
+              <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="SchemeId" ColumnName="SchemeId" />
+                <ScalarProperty Name="Days" ColumnName="Days" />
+                <ScalarProperty Name="GapingMinutes" ColumnName="GapingMinutes" />
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
+                <ScalarProperty Name="DailyWorkingMin" ColumnName="DailyWorkingMin" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InOutDetails">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.InOutDetails">
+              <MappingFragment StoreEntitySet="InOutDetails">
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
+                <ScalarProperty Name="InId" ColumnName="InId" />
+                <ScalarProperty Name="InOutTypeId" ColumnName="InOutTypeId" />
+                <ScalarProperty Name="PunchDateTime" ColumnName="PunchDateTime" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblMst_Holiday">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.tblMst_Holiday">
+              <MappingFragment StoreEntitySet="tblMst_Holiday">
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblMst_InOutType">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.tblMst_InOutType">
+              <MappingFragment StoreEntitySet="tblMst_InOutType">
+                <ScalarProperty Name="InOut" ColumnName="InOut" />
+                <ScalarProperty Name="InOutTypeId" ColumnName="InOutTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblMst_PresentStatus">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.tblMst_PresentStatus">
+              <MappingFragment StoreEntitySet="tblMst_PresentStatus">
+                <ScalarProperty Name="PresentStatus" ColumnName="PresentStatus" />
+                <ScalarProperty Name="PresentStatusId" ColumnName="PresentStatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblMst_Scheme">
+            <EntityTypeMapping TypeName="EmployeeAttendanceDBModel.tblMst_Scheme">
+              <MappingFragment StoreEntitySet="tblMst_Scheme">
+                <ScalarProperty Name="Scheme" ColumnName="Scheme" />
+                <ScalarProperty Name="SchemeId" ColumnName="SchemeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c8807db556fa411a979984ebb8b0e5fd" Name="Diagram1">
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.Approval" Width="1.5" PointX="3" PointY="3.75" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.Attendance" Width="1.5" PointX="6" PointY="3.5" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.Employee" Width="1.5" PointX="0.75" PointY="3.625" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.InOutDetails" Width="1.5" PointX="11" PointY="1.125" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.tblMst_Holiday" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.tblMst_InOutType" Width="1.5" PointX="8.75" PointY="1.75" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.tblMst_PresentStatus" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EmployeeAttendanceDBModel.tblMst_Scheme" Width="1.5" PointX="5.75" PointY="0.875" />
+        <AssociationConnector Association="EmployeeAttendanceDBModel.FK_Approval_Employee" />
+        <AssociationConnector Association="EmployeeAttendanceDBModel.FK_Attendance_Employee" />
+        <AssociationConnector Association="EmployeeAttendanceDBModel.FK_Attendance_PresentStatus" />
+        <AssociationConnector Association="EmployeeAttendanceDBModel.FK_InOutDetails_InOutType" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
