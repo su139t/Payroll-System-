@@ -1,0 +1,104 @@
+﻿@model IEnumerable<EmpAttendance.Models.Attendance>
+@{
+    ViewBag.Title = "AttendanceReport";
+}
+
+
+<div class="row mt-4">
+    <div class="col-2">
+        <label class="form-label mb-0">Employee</label>
+        @Html.DropDownList("EmpId", null, "All", htmlAttributes: new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select", @style = "width:100%" })
+    </div>
+    <div class="col-2">
+        <label class="form-label mb-0">From Date</label>
+        <input type="text" id="FromDate" name="FromDate" value="@ViewBag.TodayDate" class="form-control" readonly="readonly" />
+    </div>
+    <div class="col-2">
+        <label class="form-label mb-0">To Date</label>
+        <input type="text" id="ToDate" name="ToDate" value="@ViewBag.TodayDate" class="form-control" readonly="readonly" />
+    </div>
+
+    <div class="col-2">
+        <input type="button" id="Search" class="btn btn-dark mt-4" value="Search" />
+    </div>
+</div>
+<div>
+    <table class="table table-bordered text-center table-striped mt-4" id="AttendanceList">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Attendance Date</th>
+                <th>Attendance Status</th>
+                <th>Actual Time</th>
+                <th>Calculated Time</th>
+                <th>Setteled Time</th>
+                <th>Holiday Time</th>
+                <th>Sudden Leave Time</th>
+                <th>Leave Time</th>
+                <th>Overtime Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_FilterAttendanceReport", Model)
+        </tbody>
+    </table>
+</div>
+@section Scripts{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $("#FromDate ").datepicker({
+                changeMonth: true,
+                changeYear: true,
+            });
+            $("#ToDate ").datepicker({
+                changeMonth: true,
+                changeYear: true,
+            });
+
+
+            $('#Search').click(function () {
+                var fromdate = $('#FromDate').val();
+                var todate = $('#ToDate').val();
+                var EmployeeId = $('#EmpId').val() == "" ? 0 : $('#EmpId').val();
+                var toDateObj = new Date(todate);
+                var todayDate = new Date();
+                if (toDateObj > todayDate) {
+                    todate = moment(todayDate);
+                }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("AttendanceSearch", "ProcessAttendance")',
+                        data: { FromDate: fromdate, ToDate: todate, EmpId: EmployeeId },
+                        dataType: "html",
+                        success: function (result) {
+                        var table = $("table#AttendanceList > tbody.mytable");
+                        $('#AttendanceList tbody').empty();
+                        $("#AttendanceList TBODY TR").each(function () {
+                            $(this).remove();
+                        });
+                        $('#AttendanceList tbody').append(result);
+                        $.each(result, function (i, item) {
+                        table.append(`<tr>
+                        <td>${item.AttendanceDate}</td>
+                        <td>${item.WorkingMin}</td>
+                        <td>${item.EmpName}</td>
+                        <td>${item.PresentStatus}</td>
+                        <td>${item.CalculatedTime}</td>
+                        <td>${item.SetteledMinutes}</td>
+                        <td>${item.HolidayMinutes}</td>
+                        <td>${item.SuddenLeaveMinutes}</td>
+                        <td>${item.LeaveMinutes}</td>
+                        <td>${item.OvertimeMinutes}</td>
+                        </tr>`)});
+                        }
+                    });
+            })
+       })
+
+
+    </script>
+}

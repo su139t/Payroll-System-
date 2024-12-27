@@ -1,0 +1,296 @@
+﻿@model EmpAttendance.Models.Approval
+
+<style>
+    .gradient-custom {
+        background: rgb(140,133,255);
+        background: linear-gradient(90deg, rgba(140,133,255,1) 0%, rgba(0,121,238,1) 44%, rgba(0,212,255,1) 100%);
+        padding: 10px
+    }
+
+    .card-custom {
+        border-bottom-left-radius: 10% 50%;
+        border-top-left-radius: 10% 50%;
+        background-color: #f8f9fa;
+    }
+
+    .input-custom {
+        background-color: white;
+    }
+
+    .white-text {
+        color: hsl(52, 0%, 98%);
+        font-weight: 100;
+        font-size: 14px;
+    }
+
+    .back-button {
+        background-color: hsl(52, 0%, 98%);
+        font-weight: 700;
+        color: black;
+        margin-top: 50px;
+    }
+
+    .posdiv {
+        position: relative;
+        top: -20px
+    }
+
+    span.error {
+        display: block;
+        visibility: hidden;
+        color: red;
+        font-size: 90%;
+    }
+
+    .Checkboxsize {
+        margin-top: 5px;
+        width: 25px;
+        height: 25px
+    }
+
+    .hrmsg {
+        position: relative;
+        top: -20px
+    }
+
+    .bottomdiv {
+        position: relative;
+        top: -70px;
+    }
+
+    .cardbodymargin {
+        margin-left: 105px
+    }
+
+    .bottomdivs {
+        position: relative;
+        top: -100px;
+    }
+
+    h4 {
+        padding-right: 100px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+</style>
+
+<div class="row mt-3 mx-3 gradient-custom" style="margin-top:25px ; height:600px ; width:100%">
+    <div class="col-md-3">
+        <div style="margin-top: 50px; margin-left: 10px;" class="text-center">
+            <i id="animationDemo" data-mdb-animation="slide-right" data-mdb-toggle="animation"
+               data-mdb-animation-reset="true" data-mdb-animation-start="onScroll"
+               data-mdb-animation-on-scroll="repeat" class="fas fa-3x fa-shipping-fast text-white"></i>
+            <h3 class="mt-3 text-white">Welcome</h3>
+            <p class="white-text">Enter Your Right ✔ Detail...</p>
+            @Html.ActionLink("List", "ApprovalList", "", new { @class = "btn btn-dark" })
+        </div>
+    </div>
+    <div class="col-md-9 justify-content-center">
+        <div class="card card-custom pb-4 style=" height:600px"">
+            <div class="card-body mt-0 cardbodymargin" style="height:550px">
+                <div class="text-center mb-3 pb-2 mt-3">
+                    <h4 class="mainhead" style="color: #495057 ;"> Attendance Approval</h4>
+                    @*<hr style="width:250px; margin:0px 150px" />*@
+                </div>
+                @using (Html.BeginForm("Create", "Approval", FormMethod.Post))
+                {
+                    <input type="hidden" id="Id" class="form-control input-custom" value="@Model.Id" name="Id" />
+                    <input type="hidden" id="CreatedById" class="form-control input-custom" value="@Model.CreatedById" name="CreatedById" />
+                    <div class="row mb-4 ">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Employee</label>
+                                @if (Model.Id > 0 || GlobalVariable.IsAdmin == false)
+                                {
+                                    @Html.DropDownList("EmpId", null, "Select", htmlAttributes: new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select ", @style = "width:100%", @disabled = "disabled" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownList("EmpId", null, "Select", htmlAttributes: new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select ", @style = "width:100%" })
+                                }
+                                <span class="error">Please select employee</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Approval Date</label>
+                                <input type="text" id="ApprovalDate" name="ApprovalDate" class="form-control" value="@string.Format("{0:dd-MM-yyyy}" , Model.ApprovalDate)" readonly="readonly" />
+                                <span class="error">Approval date required</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mb-4 posdiv">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Hours</label>
+                                <input type="number" id="TotalHours" class="form-control input-custom" maxlength="1" value="@string.Format("{0}" , Model.WorkingMinutes / 60)" onkeydown="if(event.key==='.'){event.preventDefault();}" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" name="TotalHours" />
+                                <span class="error"> Time Must Be Greater Than Zero!</span>
+                                <span class="error hrmsg"> Time can not be greater than 8 hours</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Minutes</label>
+                                <input type="number" id="TotalMinutes" class="form-control input-custom" maxlength="2" value="@string.Format("{0}" , Model.WorkingMinutes % 60)" onkeydown="if(event.key==='.'){event.preventDefault();}" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" name="TotalMinutes" />
+                                <span class="error minmsg"> Minutes can not be greater than 59 minutes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-flex mb-5 bottomdiv">
+                        <div class="col mt-3">
+                            <input type="radio" id="Time1" name="Time" value="+" checked>
+                            <label>Over-Time</label><br>
+                            <input type="radio" id="Time2" name="Time" value="-" @( Model.Time == true ? "checked" : "" )>
+                            <label>Under-Time</label><br>
+                            <span class="error">Over time / Under time required</span>
+                        </div>
+                        @if (GlobalVariable.IsAdmin == true)
+                        {
+                            <div class="col mt-3">
+                                <label class="form-label mb-0">Is Approved</label>
+                                <input type="checkbox" value="true" @( Model.IsApproved == true ? "checked" : "" ) name="IsApproved" id="IsApproved" class="btn btn-dark  " />
+                            </div>
+                        }
+                    </div>
+                    <div class="row d-flex mb-5 bottomdivs">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Remark</label>
+                                <textarea id="Remark" name="Remark" class="form-control input-custom">@Model.Remark</textarea>
+                            </div>
+                        </div>
+                        <div class="error text-danger" id="allerrormsg"> </div>
+                        <div class="col">
+                            <div class="float-end  mt-5">
+                                <button type="button" class="btn btn-primary btn-rounded mx-5"
+                                        style="background-color: #0062CC ;" id="Checkbtn">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script>
+    $(document).ready(function () {
+
+      $("#ApprovalDate").datepicker({
+        dateFormat: 'dd-mm-yy'
+      });
+
+        $("#Checkbtn").click(function () {
+            var minutes = $('#TotalMinutes').val();
+            var hours = $('#TotalHours').val();
+            var CheckMinutes =  ((Number(hours) * 60) + Number(minutes));
+            var isAllValid = true;
+            if ($('#TotalHours').val().trim() == '' || $('#TotalHours').val().trim() == 0) {
+                if ($('#TotalMinutes').val().trim() == '' || $('#TotalMinutes').val().trim() == 0) {
+                    $('#TotalHours').siblings('span.error').css('visibility', 'visible');
+                    isAllValid = false;
+                }
+                else {
+                    isAllValid = true;
+                }
+            }
+            else {
+                $('#TotalHours').siblings('span.error').css('visibility', 'hidden');
+            }
+            if ($('#TotalHours').val().trim() > 8 || CheckMinutes > 480)  {
+                $('#TotalHours').siblings('span.error').css('visibility', 'hidden');
+                $('#TotalHours').siblings('span.hrmsg').css('visibility', 'visible');
+                isAllValid = false;
+            }
+            else {
+                $('#TotalHours').siblings('span.hrmsg').css('visibility', 'hidden');
+            }
+            if ($('#TotalMinutes').val().trim() > 59) {
+                if ($('#TotalHours').val().trim() > 8) {
+                    $('#TotalHours').siblings('span.hrmsg').css('visibility', 'visible');
+                }
+                else {
+                    $('#TotalHours').siblings('span.error').css('visibility', 'hidden');
+                    $('#TotalMinutes').siblings('span.minmsg').css('visibility', 'visible');
+                    isAllValid = false;
+                }
+            }
+            else {
+                $('#TotalMinutes').siblings('span.minmsg').css('visibility', 'hidden');
+            }
+            if ($('#EmpId').val().trim() == '') {
+                $('#EmpId').siblings('span.error').css('visibility', 'visible');
+                isAllValid = false;
+            }
+            else {
+                $('#EmpId').siblings('span.error').css('visibility', 'hidden');
+            }
+            if ($('#ApprovalDate').val().trim() == '') {
+                $('#ApprovalDate').siblings('span.error').css('visibility', 'visible');
+                isAllValid = false;
+            }
+            else {
+                $('#ApprovalDate').siblings('span.error').css('visibility', 'hidden');
+            }
+
+            var checkedRadio = $('input[type="radio"]:checked');
+            if (checkedRadio.length > 0) {
+                $('#Time1').siblings('span.error').css('visibility', 'hidden');
+            }
+            else {
+                $('#Time1').siblings('span.error').css('visibility', 'visible');
+                isAllValid = false;
+            }
+
+            if (isAllValid) {
+                var chekval = false;
+                var checkedValue = $('#IsApproved:checked').val();
+                if (checkedValue != null) {
+                    chekval = true;
+                }
+                var TimeSign = null;
+                TimeSign=  $('input[type="radio"]:checked').val()
+                var minutes = $('#TotalMinutes').val();
+                var hours = $('#TotalHours').val();
+                var TotalMinutes = TimeSign + ((Number(hours) * 60) + Number(minutes));
+                var startDate = $('#ApprovalDate').val();
+                var formattedDate = moment(startDate, 'DD-MM-YYYY').format('MM-DD-YYYY');
+
+                var data = {
+                Id: $('#Id').val().trim(),
+                Remark: $('#Remark').val().trim(),
+                EmpId: $('#EmpId').val().trim(),
+                ApprovalDate: formattedDate,
+                IsApproved: chekval,
+                CreatedById: $('#EmpId').val().trim(),
+                WorkingMinutes: TotalMinutes,
+                }
+
+              $.ajax({
+                 type: "POST",
+                 url: '@Url.Action("Create", "Approval")',
+                 data: { mdl: data },
+                 dataType: "json",
+                  success: function (result) {
+                      if (result == "success") {
+                          document.location.href = '/Approval/ApprovalList'
+                      }
+                      else {
+                          $('#allerrormsg').text(result)
+                      }
+                  }
+              });
+            }
+       })
+    });
+
+    </script>
+}

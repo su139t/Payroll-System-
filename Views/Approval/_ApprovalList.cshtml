@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = null;
+}
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <tr class="@item.Id">
+            <td>@item.EmpCode</td>
+            <td>@item.EmpName</td>
+            <td>@item.ApprovalDate.ToString("dd/MM/yyyy")</td>
+            <td>@string.Format("{0} hrs {1} mins", item.WorkingMinutes / 60, Math.Abs(item.WorkingMinutes % 60))</td>
+            <td>@item.CreatedTime.ToString("dd/MM/yyyy hh:mm tt")</td>
+            <td>@(item.ApprovedTime == null ? "" : item.ApprovedTime.ToString("dd/MM/yyyy hh:mm tt") )</td>
+            <td>
+                <input type="checkbox" value="true" @(item.IsApproved == true ? "checked" : "" ) onclick="return false;" onkeydown="return false;" />
+            </td>
+            <td>
+                @if (item.IsApproved == false || GlobalVariable.IsAdmin == true)
+                {
+                    @Html.ActionLink("Edit", "Edit", new { @id = item.Id }, new { @class = "btn btn-info" })
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { @id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this record? ')", @class = " btn btn-danger btncreate " })
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="6">
+            <h3>No data available</h3>
+        </td>
+    </tr>
+}
+
+
+
+
+
+

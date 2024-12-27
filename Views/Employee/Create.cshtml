@@ -1,0 +1,170 @@
+﻿@model EmpAttendance.Models.Employee
+@{
+    ViewBag.Title = "Create";
+}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<style>
+    .gradient-custom {
+        background: rgb(140,133,255);
+        background: linear-gradient(90deg, rgba(140,133,255,1) 0%, rgba(0,121,238,1) 44%, rgba(0,212,255,1) 100%);
+        padding: 10px
+    }
+
+    .card-custom {
+        border-bottom-left-radius: 10% 50%;
+        border-top-left-radius: 10% 50%;
+        background-color: #f8f9fa;
+    }
+
+
+    .input-custom {
+        background-color: white;
+    }
+
+    .white-text {
+        color: hsl(52, 0%, 98%);
+        font-weight: 100;
+        font-size: 14px;
+    }
+
+    .back-button {
+        background-color: hsl(52, 0%, 98%);
+        font-weight: 700;
+        color: black;
+        margin-top: 50px;
+    }
+
+    .Checkboxsize {
+        margin-top: 5px;
+        width: 25px;
+        height: 25px
+    }
+
+    .cardbodymargin {
+        margin-left: 105px
+    }
+
+    h4 {
+        padding-right: 100px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+</style>
+<div class="row mt-3 mx-3 gradient-custom" style="margin-top:25px ; width:100%">
+    <div class="col-md-3">
+        <div style="margin-top: 50px; margin-left: 10px;" class="text-center">
+            <i id="animationDemo" data-mdb-animation="slide-right" data-mdb-toggle="animation"
+               data-mdb-animation-reset="true" data-mdb-animation-start="onScroll"
+               data-mdb-animation-on-scroll="repeat" class="fas fa-3x fa-shipping-fast text-white"></i>
+            <h3 class="mt-3 text-white">Welcome</h3>
+            <p class="white-text">Enter Your Right ✔ Detail...</p>
+            @Html.ActionLink("Employee List", "List", "", new { @class = "btn btn-dark" })
+        </div>
+    </div>
+    <div class="col-md-9 justify-content-center">
+        <div class="card card-custom pb-4">
+            <div class="card-body mt-0 cardbodymargin">
+                <div class="text-center mb-3 pb-2 mt-3">
+                    <h4 class="mainhead" style="color: #495057 ;">Employee Details</h4>
+                </div>
+                @using (Html.BeginForm("Create", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="Id" class="form-control input-custom" value="@Model.Id" name="Id" />
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Name</label>
+                                <input type="text" id="Name" class="form-control input-custom" value="@Model.Name" name="Name" />
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Phone</label>
+                                <input type="number" id="Phone" class="form-control input-custom" value="@Model.Phone" name="Phone" />
+                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Employee Code</label>
+                                <input type="text" id="EmployeeCode" class="form-control input-custom" value="@Model.EmployeeCode" name="EmployeeCode" />
+                                @Html.ValidationMessageFor(model => model.EmployeeCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Password</label>
+                                <input type="password" id="Password" class="form-control input-custom" value="@Model.Password" name="Password" />
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Email</label>
+                                <input type="email" id="Email" class="form-control input-custom" value="@Model.Email" name="Email" />
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Salary</label>
+                                <input type="number" id="Salary" onkeydown="if(event.key==='.'){event.preventDefault();}" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" class="form-control input-custom" value="@Model.Salary" name="Salary" />
+                                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Daily Working Minutes</label>
+                                <input type="number" id="DailyWorkingMin" class="form-control input-custom" value="@Model.DailyWorkingMin" name="DailyWorkingMin" />
+                                @Html.ValidationMessageFor(model => model.DailyWorkingMin, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Gaping Minutes</label>
+                                <input type="number" id="GapingMinutes" class="form-control input-custom" value="@Model.GapingMinutes" name="GapingMinutes" />
+      
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Scheme</label>
+                                @Html.DropDownList("SchemeId", null, "Select", new { @ID = "SchemeId", @Name = "SchemeId", @class = "form-control form-select ", @style = "width:100%" })
+                                @Html.ValidationMessageFor(model => model.SchemeId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Remark</label>
+                                <textarea id="Remark" name="Remark" class="form-control input-custom">@Model.Remark</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="float-end ">
+                        <button type="submit" class="btn btn-primary btn-rounded mx-5"
+                                style="background-color: #0062CC ;" id="Checkbtn">
+                            Save
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

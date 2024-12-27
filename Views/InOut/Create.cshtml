@@ -1,0 +1,200 @@
+﻿@model EmpAttendance.Models.InOutDetails
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<style>
+    .gradient-custom {
+        background: rgb(140,133,255);
+        background: linear-gradient(90deg, rgba(140,133,255,1) 0%, rgba(0,121,238,1) 44%, rgba(0,212,255,1) 100%);
+        padding: 10px
+    }
+
+    span.error {
+        display: block;
+        visibility: hidden;
+        color: red;
+        font-size: 90%;
+    }
+
+    .InEntry {
+        position: relative;
+        top: -40px;
+    }
+
+    .OutEntry {
+        position: relative;
+        top: -15px;
+    }
+
+    .card-custom {
+        border-bottom-left-radius: 10% 50%;
+        border-top-left-radius: 10% 50%;
+        background-color: #f8f9fa;
+    }
+
+    .input-custom {
+        background-color: white;
+    }
+
+    .white-text {
+        color: hsl(52, 0%, 98%);
+        font-weight: 100;
+        font-size: 14px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+</style>
+
+<div class="row gradient-custom">
+    <div class="col-md-3 col-xs-3">
+        <div style="margin-top: 50px; margin-left: 10px;" class="text-center">
+            <i id="animationDemo" data-mdb-animation="slide-right" data-mdb-toggle="animation"
+               data-mdb-animation-reset="true" data-mdb-animation-start="onScroll"
+               data-mdb-animation-on-scroll="repeat" class="fas fa-3x fa-shipping-fast text-white"></i>
+            <h3 class="mt-3 text-white">Welcome</h3>
+            <p class="white-text">Enter Your Right ✔ Punching Detail...</p>
+            @Html.ActionLink("List", "InOutList", "", new { @class = "btn btn-dark" })
+        </div>
+    </div>
+    <div class="col-md-8 col-xs-8">
+        <div class="card card-custom pb-4">
+            <div class="card-body mt-0" style="margin-left: 50px; margin-right: 50px;">
+                <div class="text-center mb-3 pb-2 mt-3">
+                    <h4 class="mainhead" style="color: #495057 ;">Employee In/Out</h4>
+                </div>
+                @using (Html.BeginForm("Create", "InOut", FormMethod.Post))
+                {
+                    <input type="hidden" id="Id" class="form-control input-custom" value="@Model.Id" name="Id" />
+                    <input type="hidden" id="CreatedById" class="form-control input-custom" value="@Model.CreatedById" name="CreatedById" />
+                    <div class="row mb-4">
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Employee</label>
+                                @if (GlobalVariable.IsAdmin == false)
+                                {
+                                    @Html.DropDownList("EmpId", null, "Select", new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select ", @style = "width:100%", @disabled = "disabled" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownList("EmpId", null, "Select", new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select ", @style = "width:100%" })
+                                }
+                                <span class="error">Employee name required</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Log Type</label>
+                                @Html.DropDownList("InOutTypeId", null, "Select", htmlAttributes: new { @ID = "InOutTypeId", @Name = "InOutTypeId", @class = "form-control form-select", @style = "width:100%" })
+                                <span class="error"> In/Out type required</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Punching Time</label>
+                                @if (GlobalVariable.IsAdmin == false)
+                                {
+                                    @Html.TextBox("PunchDateTime", Model.PunchDateTime.ToString("dd/MM/yyyy HH:mm tt"), new { @class = "from-date-picker form-control", @disabled = "disabled" })
+                                }
+                                else
+                                {
+                                    @Html.TextBox("PunchDateTime", Model.PunchDateTime.ToString("dd/MM/yyyy HH:mm tt"), new { @class = "from-date-picker form-control" })
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-outline">
+                                <label class="form-label mb-0">Remark</label>
+                                <textarea id="Remark" name="Remark" class="form-control input-custom">@Model.Remark</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error text-danger" id="allerrormsg"> </div>
+                    <div class="float-end ">
+                        <button type="button" class="btn btn-primary btn-rounded mx-5"
+                                style="background-color: #0062CC;" id="Checkbtn">
+                            Save
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 col-xs-1">
+
+    </div>
+</div>
+
+@section scripts {
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.1/jquery-ui-timepicker-addon.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.1/jquery-ui-timepicker-addon.css">
+
+    <script>
+
+        $('.from-date-picker').datetimepicker({
+            dateFormat: 'dd/mm/yy',
+            timeFormat: 'hh:mm tt',
+            timeInput: true
+        });
+
+        $("#Checkbtn").click(function () {
+            var isAllValid = true;
+            if ($('#InOutTypeId').val().trim() == '') {
+                $('#InOutTypeId').siblings('span.error').css('visibility', 'visible');
+                $('#InOutTypeId').siblings('span.InEntry').css('visibility', 'hidden');
+                $('#InOutTypeId').siblings('span.OutEntry').css('visibility', 'hidden');
+                isAllValid = false;
+            }
+            else {
+                $('#InOutTypeId').siblings('span.error').css('visibility', 'hidden');
+            }
+            if ($('#EmpId').val().trim() == '') {
+                $('#EmpId').siblings('span.error').css('visibility', 'visible');
+                isAllValid = false;
+            }
+            else {
+                $('#EmpId').siblings('span.error').css('visibility', 'hidden');
+            }
+            if (isAllValid) {
+                var startDate = $('#PunchDateTime').val();
+                var formattedDate = moment(startDate, 'DD/MM/YYYY HH:mm').format('MM-DD-YYYY HH:mm');
+                var data = {
+                    Id: $('#Id').val().trim(),
+                    EmpId: $('#EmpId').val().trim(),
+                    PunchDateTime: formattedDate,
+                    InOutTypeId: $('#InOutTypeId').val().trim(),
+                    Remark: $('#Remark').val().trim(),
+                    CreatedById: $('#EmpId').val().trim(),
+                }
+                $.ajax({
+                    url: '/InOut/Create',
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    dataType: "JSON",
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response == "Success") {
+                            document.location.href = '/InOut/InOutList';
+                        }
+                        else {
+                            $('#allerrormsg').text(response)
+                        }
+                    },
+                    error: function (response) {
+                        console.log("error", response);
+                    }
+                });
+            }
+        })
+    </script>
+}

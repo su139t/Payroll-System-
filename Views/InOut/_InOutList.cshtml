@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.EmpCode</td>
+            <td>@item.EmpName</td>
+            <td>@item.PunchDateTime.ToString("dd/MM/yyyy")</td>
+            <td>@item.PunchDateTime.ToString("hh:mm tt")</td>
+            <td>@item.InOut</td>
+            <td>@item.Remark</td>
+            @if (item.InOut != "Out")
+            {
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { @id = item.InId }, new { onclick = "return confirm('Are you sure you want to delete this record? ')", @class = " btn btn-danger btncreate " })
+                </td>
+            }
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="6">
+            <h3>No data available</h3>
+        </td>
+    </tr>
+}

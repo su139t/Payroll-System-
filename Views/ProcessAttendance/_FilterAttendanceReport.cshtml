@@ -1,0 +1,59 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<EmpAttendance.Models.Attendance>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.EmpName</td>
+            <td>@item.AttendanceDate.ToString("MM/dd/yyyy")</td>
+            <td>@item.PresentStatus</td>
+            <td>
+                @(item.WorkingMin != null ? string.Format("{0} hrs {1} mins", item.WorkingMin / 60, item.WorkingMin % 60) : "")
+            </td>
+            <td>
+                @(item.CalculatedMinutes != null ? string.Format("{0} hrs {1} mins", item.CalculatedMinutes / 60, item.CalculatedMinutes % 60) : "")
+            </td>
+            <td>
+                @(item.SetteledMinutes != null ? string.Format("{0} hrs {1} mins", item.SetteledMinutes / 60, item.SetteledMinutes % 60) : "")
+            </td>
+            <td>
+                @(item.HolidayMinutes != null ? string.Format("{0} hrs {1} mins", item.HolidayMinutes / 60, item.HolidayMinutes % 60) : "")
+            </td>
+            <td>
+                @(item.SuddenLeaveMinutes != null ? string.Format("{0} hrs {1} mins", item.SuddenLeaveMinutes / 60, item.SuddenLeaveMinutes % 60) : "")
+            </td>
+            <td>
+                @(item.LeaveMinutes != null ? string.Format("{0} hrs {1} mins", item.LeaveMinutes / 60, item.LeaveMinutes % 60) : "")
+            </td>
+            <td>
+                @(item.OvertimeMinutes != null ? string.Format("{0} hrs {1} mins", item.OvertimeMinutes / 60, item.OvertimeMinutes % 60) : "")
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="6">
+        </td>
+    </tr>
+}
+@functions {
+    string ConvertMinutesToHoursAndMinutes(int totalMinutes)
+    {
+        int hours = totalMinutes / 60;
+        int remainingMinutes = totalMinutes % 60;
+
+        return $"{hours} hours and {remainingMinutes} minutes";
+    }
+}
+
+
+
+
+
+
+

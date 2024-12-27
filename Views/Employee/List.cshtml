@@ -1,0 +1,38 @@
+﻿@model IEnumerable<EmpAttendance.Models.Employee>
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>Employee List</h2>
+<table class="table">
+    @Html.ActionLink("Create", "Create", "", new { @class = "btn btn-info " })
+
+    <thead>
+        <tr>
+            <th>Employee Code</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact No.</th>
+            <th>Salary</th>
+            <th>Working Time/Day</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.EmployeeCode</td>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.Salary</td>
+                <td>@string.Format("{0} hrs {1} mins", item.DailyWorkingMin / 60, item.DailyWorkingMin % 60)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { @id = item.Id }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Delete", "Delete", new { @id = item.Id }, new { onclick = "return confirm('Are you sure you want to delete this record? ')", @class = " btn btn-danger btncreate " })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

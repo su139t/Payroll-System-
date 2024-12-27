@@ -1,0 +1,129 @@
+﻿@model IEnumerable<EmpAttendance.Models.Approval>
+@{
+    ViewBag.Title = "ApprovalList";
+}
+
+<h2>Approval List</h2>
+<style>
+
+    span.error {
+        display: block;
+        visibility: hidden;
+        color: red;
+        font-size: 90%;
+    }
+
+    .posspan {
+        position: relative;
+        top: -20px;
+    }
+</style>
+<table class="table text-center" id="ApprovalList">
+    <div class="row">
+        <div class="col-2">
+            <label class="form-label mb-0">Employee</label>
+            @if (GlobalVariable.IsAdmin == false)
+            {
+                @Html.DropDownList("EmpId", null, htmlAttributes: new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select ", @style = "width:100%", @disabled = "disabled" })
+            }
+            else
+            {
+                @Html.DropDownList("EmpId", null, "All", htmlAttributes: new { @ID = "EmpId", @Name = "EmpId", @class = "form-control form-select ", @style = "width:100%" })
+            }
+        </div>
+        <div class="col-2">
+            <label class="form-label mb-0">From Date</label>
+            <input type="text" id="FromDate" name="FromDate" value="@string.Format("{0:dd/MM/yyyy}" ,  @ViewBag.TodayDate)" class="form-control" readonly="readonly" />
+        </div>
+        <div class="col-2">
+            <label class="form-label mb-0">To Date</label>
+            <input type="text" id="ToDate" name="ToDate" value="@string.Format("{0:dd/MM/yyyy}" ,  @ViewBag.TodayDate)" class="form-control" readonly="readonly" />
+        </div>
+        <div class="col-2">
+            <input type="button" id="Search" class="btn btn-dark mt-4" value="Search" />
+        </div>
+        <div class="col-4">
+            <div class="float-end mt-4">
+                @Html.ActionLink("Create", "Create", "", new { @class = "btn btn-info " })
+            </div>
+        </div>
+    </div>
+    <thead>
+        <tr>
+            <th>Employee Code</th>
+            <th>Employee Name</th>
+            <th>Approval Date</th>
+            <th>Working Time</th>
+            <th>Created Time</th>
+            <th>Approved Time</th>
+            <th>Approved</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @Html.Partial("_ApprovalList", Model)
+    </tbody>
+</table>
+@section Scripts{
+    @*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>*@
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script>
+    $(document).ready(function () {
+        $("#FromDate ").datepicker({
+            dateFormat: 'dd/mm/yy'
+        });
+        $("#ToDate ").datepicker({
+            dateFormat: 'dd/mm/yy'
+        });
+        $('#Search').click(function () {
+                var fromdate = $('#FromDate').val();
+                var todate = $('#ToDate').val();
+                var formattedtoDate = moment(todate, 'DD/MM/YYYY').format('MM/DD/YYYY');
+                var formattedfromDate = moment(fromdate, 'DD/MM/YYYY').format('MM/DD/YYYY');
+                var EmployeeId = $('#EmpId').val() == "" ? 0 : $('#EmpId').val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("_ApprovalList", "Approval")',
+                    data: { FromDate: formattedfromDate, ToDate: formattedtoDate, EId: EmployeeId },
+                    dataType: "html",
+                    success: function (result) {
+                        var table = $("table#ApprovalList > tbody.mytable");
+                        $('#ApprovalList tbody').empty();
+                        $("#ApprovalList TBODY TR").each(function () {
+                            $(this).remove();
+                        });
+                        $('#ApprovalList tbody').append(result);
+                        $.each(result, function (i, item) {
+                            table.append(`<tr>
+                               <td>${item.EmpCode}</td>
+                               <td>${item.EmpName}</td>
+                               <td>${item.ApprovalDate.ToString("dd/MM/yyyy")}</td>
+                               <td>${string.Format("{0} hrs {1} mins", item.WorkingMinutes / 60, item.WorkingMinutes % 60)}</td>
+                               <td>${item.CreatedTime.ToString("dd/MM/yyyy hh:mm tt")}</td>
+                               <td>${item.ApprovedTime.ToString("dd/MM/yyyy hh:mm tt") }</td>
+                             </tr>`)
+                        });
+                    },
+                    error: function (error) {
+                        console.log("error");
+                    }
+             });
+        })
+    })
+
+    </script>
+}
