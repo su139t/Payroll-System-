@@ -1,0 +1,48 @@
+SElect * from [dbo].[Approval]
+
+alter table  [dbo].[Approval]
+add ApprovedMinutes int
+go
+alter table  [dbo].[Approval]
+add ConvFactor numeric(6,2)
+go
+alter table  [dbo].[Employee]
+add SchemeId int
+go
+
+
+CREATE TABLE [dbo].[tblMst_Scheme](
+	[SchemeId] [int] NOT NULL,
+	[Scheme] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tblMst_Scheme] PRIMARY KEY CLUSTERED 
+(
+	[SchemeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+Insert into [tblMst_Scheme] values(1,'Daily')
+Insert into [tblMst_Scheme] values(2,'Weekly')
+go
+
+create procedure SpDeleteAll
+as 
+delete from  Approval
+delete from Attendance
+delete from InOutDetails
+delete from Employee
+go
+
+alter table  [dbo].[Attendance]
+add SetteledMinutes numeric(10,2)
+go
+
+
+alter procedure SpDeleteAll
+as 
+delete from  Approval
+delete from Attendance
+delete from InOutDetails
+delete from Employee where UserType != 'Admin'
+go
+

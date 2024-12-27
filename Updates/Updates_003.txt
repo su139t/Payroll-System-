@@ -1,0 +1,11 @@
+ 
+INSERT [dbo].[tblMst_PresentStatus] ([PresentStatusId], [PresentStatus]) VALUES (1, N'Present')
+GO
+INSERT [dbo].[tblMst_PresentStatus] ([PresentStatusId], [PresentStatus]) VALUES (2, N'Holiday')
+GO
+INSERT [dbo].[tblMst_PresentStatus] ([PresentStatusId], [PresentStatus]) VALUES (3, N'SuddenLeave')
+GO
+INSERT [dbo].[tblMst_PresentStatus] ([PresentStatusId], [PresentStatus]) VALUES (4, N'Leave')
+GO
+INSERT [dbo].[tblMst_PresentStatus] ([PresentStatusId], [PresentStatus]) VALUES (5, N'Sandwich')
+GO
